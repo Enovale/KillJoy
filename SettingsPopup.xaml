@@ -1,0 +1,17 @@
+﻿<atlas:Window x:Name="Settings" x:Class="KillJoy.SettingsPopup"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:atlas="clr-namespace:Atlas.UI;assembly=Atlas.UI"
+              xmlns:beha="clr-namespace:DisableNavigation"
+              Title="Settings"
+              Width="980"
+              Height="640"
+              Background="#2D2D30"
+              CanResize="False"
+              Icon="pack://application:,,,/Atlas.UI;component/Resources/Images/icons/atlas.png"
+              ShowIcon="True"
+              UseGlowEffect="True">
+    <Grid>
+        
+    </Grid>
+</atlas:Window>
