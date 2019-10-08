@@ -11,6 +11,13 @@
               Icon="pack://application:,,,/Atlas.UI;component/Resources/Images/icons/atlas.png"
               ShowIcon="True"
               UseGlowEffect="True">
+    <atlas:Window.Resources>
+        <ContextMenu x:Key="NotifierContextMenu"
+                    Placement="MousePoint">
+            <MenuItem Header="Open" Click="Menu_Open" Foreground="White" />
+            <MenuItem Header="Close" Click="Menu_Close" Foreground="White" />
+        </ContextMenu>
+    </atlas:Window.Resources>
     <atlas:Window.CaptionMenu>
         <atlas:MenuItem Header="File">
             <atlas:MenuItem Header="Preferences" />
