@@ -1,13 +1,46 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 #nullable enable
 namespace KillJoy
 {
+
+    public class RunningProcess
+    {
+
+        public string Name { get; set; }
+        public string Title { get; set; }
+        public int PID { get; set; }
+        public string Path { get; set; }
+        public bool Blocked { get; set; }
+
+        public RunningProcess(Process task, bool b = false)
+        {
+            this.Name = task.ProcessName;
+            this.Title = task.MainWindowTitle ?? task.ProcessName;
+            this.PID = task.Id;
+            this.Path = "";
+            this.Blocked = b;
+        }
+
+    }
+
     /// <summary>
     /// Full of methods to discover, kill, and track running programs on the user's PC.
     /// </summary>
     public static class ProcessDiscovery
     {
+
+        public static RunningProcess[] ProcessesToRPArray(Process[] inArray)
+        {
+            RunningProcess[] processes = new RunningProcess[inArray.Length];
+            for(var i = 0; i < inArray.Length; i++)
+            {
+                processes[i] = new RunningProcess(inArray[i]);
+            }
+            return processes;
+        }
 
         /// <summary>
         /// Finds all Process objects based on a given name and kills them.
@@ -60,6 +93,25 @@ namespace KillJoy
             Process[] processList = Process.GetProcessesByName(name);
             if (processList.Length == 0) return null;
             return processList[0];
+        }
+
+        /// <summary>
+        /// Returns an array of every process that has a window
+        /// </summary>
+        /// <returns>Array of all windowed processes</returns>
+        public static Process[] GetAllWindowedProcesses()
+        {
+            List<Process> finalList = new List<Process>();
+            Process[] tempList = Process.GetProcesses();
+
+            foreach (Process process in tempList)
+            {
+                if (!String.IsNullOrEmpty(process.MainWindowTitle))
+                {
+                    finalList.Add(process);
+                }
+            }
+            return finalList.ToArray();
         }
 
     }

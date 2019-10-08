@@ -10,8 +10,41 @@
               CanResize="False"
               Icon="pack://application:,,,/Atlas.UI;component/Resources/Images/icons/atlas.png"
               ShowIcon="True"
+              BorderBrush="Green"
+              GlowEffectBrush="Green"
               UseGlowEffect="True">
     <Grid>
-        
+        <DataGrid x:Name="ProcessGrid" 
+              HorizontalAlignment="Left" 
+              Margin="0,0,0,0" 
+              VerticalAlignment="Top"
+              ColumnWidth="*"
+              Width="447"
+              Height="600"
+              ItemsSource="{Binding}"
+              AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Title}" 
+                                Foreground="White"  Header="Name" IsReadOnly="true" />
+                <DataGridTextColumn Binding="{Binding PID}" 
+                                Foreground="White" Header="PID" IsReadOnly="true" />
+                <DataGridTextColumn Binding="{Binding Path}" 
+                                Foreground="White" Header="Path" IsReadOnly="true" />
+                <DataGridTemplateColumn x:Name="BlockedColumn" IsReadOnly="False" Header="Blocked" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <atlas:CheckBox Checked="BlockToggle" 
+                                            Unchecked="BlockToggle" 
+                                            IsChecked="{Binding Blocked, UpdateSourceTrigger=PropertyChanged}" 
+                                            HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center" 
+                                            BorderBrush="Firebrick"
+                                            Foreground="Red"
+                                            />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </atlas:Window>

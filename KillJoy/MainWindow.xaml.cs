@@ -18,6 +18,7 @@ using Atlas.UI;
 
 namespace KillJoy
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -27,17 +28,15 @@ namespace KillJoy
         public HomePage homeObj;
         public SettingsPopup settingsObj;
 
-        private NotifyIcon notifier = new NotifyIcon();
-
         public MainWindow()
         {
             InitializeComponent();
             homeObj = new HomePage();
             this.MainFrame.Navigate(homeObj);
 
-            this.notifier.MouseDown += new System.Windows.Forms.MouseEventHandler(notifier_MouseDown);
-            this.notifier.Icon = KillJoy.Properties.Resources.A;
-            this.notifier.Visible = true;
+            this.TrayIcon.Icon = Properties.Resources.A;
+            this.TrayIcon.CaptureMouse();
+            this.TrayIcon.MouseLeftButtonUp += notifier_MouseUp;
         }
 
         protected override void OnGotFocus(RoutedEventArgs e)
@@ -55,7 +54,7 @@ namespace KillJoy
         {
             e.Cancel = true;
             this.Hide();
-            this.UseGlowEffect = false;
+            //this.UseGlowEffect = false;
         }
 
         private void MainWindow_DisplaySettings(object sender, RoutedEventArgs e)
@@ -68,12 +67,10 @@ namespace KillJoy
             this.MainFrame.Navigate(homeObj);
         }
 
-        void notifier_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void notifier_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+            if (e.LeftButton == MouseButtonState.Released)
             {
-                //System.Windows.Controls.ContextMenu menu = (System.Windows.Controls.ContextMenu)this.FindResource("NotifierContextMenu");
-                //menu.IsOpen = true;
                 this.Show();
                 this.Focus();
             }
@@ -87,6 +84,11 @@ namespace KillJoy
         private void Menu_Close(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.MessageBox.Show("Close");
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Application.Current.Shutdown();
         }
 
     }

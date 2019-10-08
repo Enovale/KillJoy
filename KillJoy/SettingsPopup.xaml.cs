@@ -20,9 +20,24 @@ namespace KillJoy
     /// </summary>
     public partial class SettingsPopup
     {
+
+        public List<RunningProcess> Processes = new List<RunningProcess>();
+
         public SettingsPopup()
         {
             InitializeComponent();
+            this.ProcessGrid.DataContext = Processes;
+            new SettingsHandler(this);
+        }
+
+        private void myDG_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            // stub
+        }
+
+        private void BlockToggle(object sender, RoutedEventArgs e)
+        {
+            //Properties.Settings.Default["BlackList"];
         }
     }
 }
