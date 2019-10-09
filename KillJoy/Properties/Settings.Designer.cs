@@ -26,12 +26,12 @@ namespace KillJoy.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Setting {
+        public string BlackList {
             get {
-                return ((string)(this["Setting"]));
+                return ((string)(this["BlackList"]));
             }
             set {
-                this["Setting"] = value;
+                this["BlackList"] = value;
             }
         }
     }

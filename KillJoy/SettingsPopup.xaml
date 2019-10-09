@@ -1,46 +1,64 @@
-﻿<atlas:Window x:Name="Settings" x:Class="KillJoy.SettingsPopup"
+﻿<atlas:Window x:Class="KillJoy.SettingsPopup"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:atlas="clr-namespace:Atlas.UI;assembly=Atlas.UI"
               xmlns:beha="clr-namespace:DisableNavigation"
+              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+              xmlns:i2="http://schemas.microsoft.com/expression/2010/interactions"
+              xmlns:local="clr-namespace:KillJoy"
+              x:Name="Settings"
               Title="Settings"
               Width="980"
               Height="640"
               Background="#2D2D30"
+              BorderBrush="Green"
               CanResize="False"
+              GlowEffectBrush="Green"
               Icon="pack://application:,,,/Atlas.UI;component/Resources/Images/icons/atlas.png"
               ShowIcon="True"
-              BorderBrush="Green"
-              GlowEffectBrush="Green"
               UseGlowEffect="True">
     <Grid>
-        <DataGrid x:Name="ProcessGrid" 
-              HorizontalAlignment="Left" 
-              Margin="0,0,0,0" 
-              VerticalAlignment="Top"
-              ColumnWidth="*"
-              Width="447"
-              Height="600"
-              ItemsSource="{Binding}"
-              AutoGenerateColumns="False">
+        <DataGrid x:Name="ProcessGrid"
+                  Width="964"
+                  Height="600"
+                  Margin="0,0,0,0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  AutoGenerateColumns="False"
+                  ColumnWidth="*"
+                  ItemsSource="{Binding Processes}">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Title}" 
-                                Foreground="White"  Header="Name" IsReadOnly="true" />
-                <DataGridTextColumn Binding="{Binding PID}" 
-                                Foreground="White" Header="PID" IsReadOnly="true" />
-                <DataGridTextColumn Binding="{Binding Path}" 
-                                Foreground="White" Header="Path" IsReadOnly="true" />
-                <DataGridTemplateColumn x:Name="BlockedColumn" IsReadOnly="False" Header="Blocked" Width="Auto">
+                <DataGridTextColumn Binding="{Binding Title}"
+                                    Foreground="White"
+                                    Header="Name"
+                                    IsReadOnly="true" />
+                <DataGridTextColumn Binding="{Binding PID}"
+                                    Foreground="White"
+                                    Header="PID"
+                                    IsReadOnly="true" />
+                <DataGridTextColumn Binding="{Binding Path}"
+                                    Foreground="White"
+                                    Header="Path"
+                                    IsReadOnly="true" />
+                <DataGridTemplateColumn x:Name="BlockedColumn"
+                                        Width="Auto"
+                                        Header="Blocked"
+                                        IsReadOnly="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <atlas:CheckBox Checked="BlockToggle" 
-                                            Unchecked="BlockToggle" 
-                                            IsChecked="{Binding Blocked, UpdateSourceTrigger=PropertyChanged}" 
-                                            HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center" 
+                            <atlas:CheckBox HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
                                             BorderBrush="Firebrick"
                                             Foreground="Red"
-                                            />
+                                            IsChecked="{Binding Blocked, UpdateSourceTrigger=PropertyChanged}"
+                                            >
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Checked">
+                                        <i:InvokeCommandAction Command="{Binding CheckedChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=local:SettingsPopup}}" CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </atlas:CheckBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KillJoy
 {
     public class KillJoyService
     {
+        private static KillJoyService _instance;
 
-        public static KillJoyService Instance;
-        public bool FocusStarted = false;
+        public static KillJoyService Instance =>
+            new Lazy<KillJoyService>(() => _instance ?? (_instance = new KillJoyService()), true).Value;
 
-        public KillJoyService()
+        public bool FocusStarted { get; set; }
+
+        private KillJoyService()
         {
-            Instance = this;
+            FocusStarted = false;
         }
-
     }
 }

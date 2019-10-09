@@ -1,29 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 
-#nullable enable
 namespace KillJoy
 {
 
     public class RunningProcess
     {
-
         public string Name { get; set; }
         public string Title { get; set; }
         public int PID { get; set; }
         public string Path { get; set; }
         public bool Blocked { get; set; }
 
-        public RunningProcess(Process task, bool b = false)
+        public RunningProcess(Process task)
         {
-            this.Name = task.ProcessName;
-            this.Title = task.MainWindowTitle ?? task.ProcessName;
-            this.PID = task.Id;
-            this.Path = "";
-            this.Blocked = b;
+            Name = task.ProcessName;
+            Title = task.MainWindowTitle ?? task.ProcessName;
+            if(Title == "")
+            {
+                Title = task.ProcessName;
+            }
+            PID = task.Id;
+            Path = task.GetMainModuleFileName();
+            Blocked = SettingsHandler.GetKeySettingsBlacklist(task.ProcessName);
         }
-
     }
 
     /// <summary>
@@ -35,7 +39,7 @@ namespace KillJoy
         public static RunningProcess[] ProcessesToRPArray(Process[] inArray)
         {
             RunningProcess[] processes = new RunningProcess[inArray.Length];
-            for(var i = 0; i < inArray.Length; i++)
+            for (var i = 0; i < inArray.Length; i++)
             {
                 processes[i] = new RunningProcess(inArray[i]);
             }
@@ -76,7 +80,7 @@ namespace KillJoy
         /// </summary>
         /// <param name="name">The processes to find by name/</param>
         /// <returns>Returns a Process[] object of the process found, otherwise null</returns>
-        public static Process[]? GetProcessesByName(string name)
+        public static Process[] GetProcessesByName(string name)
         {
             Process[] processList = Process.GetProcessesByName(name);
             if (processList.Length == 0) return null;
@@ -88,7 +92,7 @@ namespace KillJoy
         /// </summary>
         /// <param name="name">The process to find by name/</param>
         /// <returns>Returns a Process object of the process found, otherwise null</returns>
-        public static Process? GetProcessByName(string name)
+        public static Process GetProcessByName(string name)
         {
             Process[] processList = Process.GetProcessesByName(name);
             if (processList.Length == 0) return null;
@@ -101,18 +105,48 @@ namespace KillJoy
         /// <returns>Array of all windowed processes</returns>
         public static Process[] GetAllWindowedProcesses()
         {
-            List<Process> finalList = new List<Process>();
-            Process[] tempList = Process.GetProcesses();
+            // Create new stopwatch.
+            Stopwatch stopwatch = new Stopwatch();
 
-            foreach (Process process in tempList)
-            {
-                if (!String.IsNullOrEmpty(process.MainWindowTitle))
-                {
-                    finalList.Add(process);
-                }
-            }
-            return finalList.ToArray();
+            // Begin timing.
+            stopwatch.Start();
+
+            var ret = Process.GetProcesses()
+                 .Where(p => !string.IsNullOrEmpty(p.MainWindowTitle))
+                 .ToArray();
+
+            // Stop timing.
+            stopwatch.Stop();
+
+            // Write result.
+            Debug.WriteLine("Time elapsed: {0}", stopwatch.Elapsed);
+            return ret;
         }
+    }
 
+    internal static class Extensions
+    {
+        [DllImport("Kernel32.dll")]
+        private static extern bool QueryFullProcessImageName([In] IntPtr hProcess, [In] uint dwFlags, [Out] StringBuilder lpExeName, [In, Out] ref uint lpdwSize);
+
+        public static string GetMainModuleFileName(this Process process, int buffer = 1024)
+        {
+            var fileNameBuilder = new StringBuilder(buffer);
+            uint bufferLength = (uint)fileNameBuilder.Capacity + 1;
+            try
+            {
+                return QueryFullProcessImageName(process.Handle, 0, fileNameBuilder, ref bufferLength) ?
+                    fileNameBuilder.ToString() :
+                    null;
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                return null;
+            }
+            catch(System.InvalidOperationException)
+            {
+                return null;
+            }
+        }
     }
 }

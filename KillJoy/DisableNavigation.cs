@@ -19,8 +19,6 @@ namespace DisableNavigation
             DependencyProperty.RegisterAttached("Disable", typeof(bool), typeof(DisableNavigation),
                                                 new PropertyMetadata(false, DisableChanged));
 
-
-
         public static void DisableChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var frame = (Frame)sender;
