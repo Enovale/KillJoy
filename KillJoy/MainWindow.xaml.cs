@@ -32,6 +32,7 @@ namespace KillJoy
         {
             InitializeComponent();
             homeObj = new HomePage();
+            new Lazy<KillJoyService>();
             this.MainFrame.Navigate(homeObj);
 
             this.TrayIcon.Icon = Properties.Resources.A;
